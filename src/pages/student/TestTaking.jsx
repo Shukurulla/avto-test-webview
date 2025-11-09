@@ -165,7 +165,10 @@ const TestTaking = () => {
   // Keyboard shortcuts
   const handleKeyPress = useCallback(
     (e) => {
-      if (showFeedback) return;
+      if (showFeedback || !testData) return;
+
+      const currentQuestion = testData.questions[currentQuestionIndex];
+      const answerCount = currentQuestion?.answers?.length || 0;
 
       // Prevent default for function keys
       if (e.key.startsWith("F") && !isNaN(e.key.substring(1))) {
@@ -174,19 +177,19 @@ const TestTaking = () => {
 
       switch (e.key) {
         case "F1":
-          selectAnswer(0);
+          if (answerCount >= 1) selectAnswer(0);
           break;
         case "F2":
-          selectAnswer(1);
+          if (answerCount >= 2) selectAnswer(1);
           break;
         case "F3":
-          selectAnswer(2);
+          if (answerCount >= 3) selectAnswer(2);
           break;
         case "F4":
-          selectAnswer(3);
+          if (answerCount >= 4) selectAnswer(3);
           break;
         case "F5":
-          selectAnswer(4);
+          if (answerCount >= 5) selectAnswer(4);
           break;
         case "f":
         case "F":
@@ -215,6 +218,8 @@ const TestTaking = () => {
     },
     [
       showFeedback,
+      testData,
+      currentQuestionIndex,
       showImageModal,
       showExitModal,
       selectAnswer,
