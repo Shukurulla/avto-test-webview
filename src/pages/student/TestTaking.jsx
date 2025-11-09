@@ -16,6 +16,7 @@ const TestTaking = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackData, setFeedbackData] = useState(null);
   const [showExitModal, setShowExitModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const storedTest = sessionStorage.getItem("currentTest");
@@ -82,10 +83,27 @@ const TestTaking = () => {
 
   const handleFinishTest = useCallback(async () => {
     try {
+      // Barcha savollar uchun javoblarni tayyorlash
+      // Agar javob berilmagan bo'lsa, isCorrect: false sifatida yuboramiz
+      const allAnswers = testData.questions.map((question, index) => {
+        const answer = answers[index];
+        if (answer !== null) {
+          return answer;
+        }
+        // Javob berilmagan savollar uchun
+        return {
+          questionId: question.questionId,
+          langId: question.langId,
+          userAnswer: null,
+          isCorrect: false,
+          correctAnswerId: null,
+        };
+      });
+
       const result = await testService.finishTest({
         testType: testData.testType,
         templateId: testData.templateId,
-        questions: answers.filter((a) => a !== null),
+        questions: allAnswers,
         startedAt: testData.startedAt,
       });
 
@@ -104,7 +122,8 @@ const TestTaking = () => {
   // Select answer function with useCallback
   const selectAnswer = useCallback(
     async (answerIndex) => {
-      if (showFeedback || !testData) return;
+      // Agar jarayon davom etayotgan bo'lsa, bekor qil
+      if (isProcessing || showFeedback || !testData) return;
 
       // Agar bu savolga allaqachon javob berilgan bo'lsa, qayta javob berishga ruxsat berma
       if (answers[currentQuestionIndex] !== null) return;
@@ -113,6 +132,9 @@ const TestTaking = () => {
       const selectedAnswer = currentQuestion.answers[answerIndex];
 
       if (!selectedAnswer) return;
+
+      // Jarayonni boshlash
+      setIsProcessing(true);
 
       try {
         const response = await testService.submitAnswer(
@@ -147,12 +169,19 @@ const TestTaking = () => {
           } else {
             handleFinishTest();
           }
+
+          // Keyingi savol uchun isProcessing ni false qilish (500ms qo'shimcha kutish)
+          setTimeout(() => {
+            setIsProcessing(false);
+          }, 500);
         }, 1000);
       } catch (err) {
         alert("Javobni yuborishda xatolik");
+        setIsProcessing(false);
       }
     },
     [
+      isProcessing,
       showFeedback,
       testData,
       currentQuestionIndex,
@@ -168,7 +197,8 @@ const TestTaking = () => {
       e.preventDefault();
       e.stopPropagation();
 
-      if (showFeedback || !testData) return;
+      // Agar jarayon davom etayotgan bo'lsa, tugmani ishlatishga ruxsat berma
+      if (isProcessing || showFeedback || !testData) return;
 
       const currentQuestion = testData.questions[currentQuestionIndex];
       const answerCount = currentQuestion?.answers?.length || 0;
@@ -178,7 +208,7 @@ const TestTaking = () => {
         selectAnswer(answerIndex);
       }
     },
-    [showFeedback, testData, currentQuestionIndex, selectAnswer]
+    [isProcessing, showFeedback, testData, currentQuestionIndex, selectAnswer]
   );
 
   // Keyboard shortcuts
@@ -242,7 +272,12 @@ const TestTaking = () => {
   }, [handleKeyPress]);
 
   if (!testData) {
-    return <div className="loading">Yuklanmoqda...</div>;
+    return (
+      <div className="loading">
+        <img src={Logo} alt="Logo" className="loading-logo" />
+        <div className="loading-text">Yuklanmoqda...</div>
+      </div>
+    );
   }
 
   const currentQuestion = testData.questions[currentQuestionIndex];
@@ -358,7 +393,7 @@ const TestTaking = () => {
                     key={answer.id}
                     className={className}
                     onClick={() => selectAnswer(index)}
-                    disabled={showFeedback || currentAnswer !== null}
+                    disabled={isProcessing || showFeedback || currentAnswer !== null}
                   >
                     <span className="answer-label">{label}</span>
                     <span className="answer-text">{answerText}</span>
@@ -400,7 +435,7 @@ const TestTaking = () => {
                   key={index}
                   className={btnClass}
                   onClick={() => setCurrentQuestionIndex(index)}
-                  disabled={showFeedback}
+                  disabled={isProcessing || showFeedback}
                 >
                   {index + 1}
                 </button>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { testService } from "../../services/testService";
 import "../../styles/TestResults.css";
+import { Logo } from "../../../public";
 
 const TestResults = () => {
   const { id } = useParams();
@@ -28,7 +29,12 @@ const TestResults = () => {
   };
 
   if (loading) {
-    return <div className="loading">Yuklanmoqda...</div>;
+    return (
+      <div className="loading">
+        <img src={Logo} alt="Logo" className="loading-logo" />
+        <div className="loading-text">Yuklanmoqda...</div>
+      </div>
+    );
   }
 
   if (error) {
@@ -49,7 +55,8 @@ const TestResults = () => {
     return null;
   }
 
-  const passed = result.score >= 70;
+  // Backend'dan kelgan passed qiymatini ishlatamiz
+  const passed = result.passed !== undefined ? result.passed : result.score >= 70;
   const totalQuestions = result.questions.length;
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);

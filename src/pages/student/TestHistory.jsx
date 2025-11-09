@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { testService } from '../../services/testService';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/TestHistory.css';
+import { Logo } from '../../../public';
 
 const TestHistory = () => {
   const navigate = useNavigate();
@@ -37,7 +38,12 @@ const TestHistory = () => {
   };
 
   if (loading) {
-    return <div className="loading">Yuklanmoqda...</div>;
+    return (
+      <div className="loading">
+        <img src={Logo} alt="Logo" className="loading-logo" />
+        <div className="loading-text">Yuklanmoqda...</div>
+      </div>
+    );
   }
 
   return (

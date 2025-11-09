@@ -66,7 +66,12 @@ const TestSelection = () => {
   };
 
   if (loading) {
-    return <div className="loading">Yuklanmoqda...</div>;
+    return (
+      <div className="loading">
+        <img src={Logo} alt="Logo" className="loading-logo" />
+        <div className="loading-text">Yuklanmoqda...</div>
+      </div>
+    );
   }
 
   return (
@@ -150,7 +155,7 @@ const TestSelection = () => {
           </button>
 
           <div className="footer-text">
-            <p>© 2025 IMAX.MCM | Platformni innovatsiyalari</p>
+            <p>© 2025 IMAX MCHJ | Platformni himoyalangan</p>
           </div>
         </div>
       </div>
