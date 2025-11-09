@@ -71,15 +71,6 @@ const TestHistory = () => {
 
                 return (
                   <div key={test._id} className={`history-card ${passed ? 'passed' : 'failed'}`}>
-                    <div className="card-header">
-                      <h3>
-                        {test.testType === 50 ? '50 savollik test' : '20 savollik test'}
-                      </h3>
-                      <span className={`badge ${passed ? 'badge-success' : 'badge-danger'}`}>
-                        {passed ? 'O\'tdi' : 'O\'tmadi'}
-                      </span>
-                    </div>
-
                     <div className="card-body">
                       <div className="score-display-small">
                         <span className="score">{test.score}%</span>

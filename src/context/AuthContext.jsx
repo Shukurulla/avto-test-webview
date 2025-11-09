@@ -20,19 +20,46 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkAuth = async () => {
+    console.log('🔍 checkAuth START');
     try {
       const token = localStorage.getItem('token');
-      if (token) {
-        const response = await authService.getMe();
-        setUser(response.data.user);
+      const storedUser = localStorage.getItem('user');
+
+      console.log('📝 token:', token ? 'MAVJUD ✅' : 'YO\'Q ❌');
+      console.log('📝 storedUser:', storedUser ? 'MAVJUD ✅' : 'YO\'Q ❌');
+
+      if (token && storedUser) {
+        // Avval localStorage dan user ni yuklash
+        const parsedUser = JSON.parse(storedUser);
+        console.log('👤 parsedUser:', parsedUser);
+        setUser(parsedUser);
+        setLoading(false); // Darhol loading ni false qilish
+        console.log('✅ User set qilindi va loading = false');
+
+        // Keyin server dan yangi ma'lumot olish
+        try {
+          const response = await authService.getMe();
+          console.log('🌐 Server response:', response.data);
+          setUser(response.data.user);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+        } catch (error) {
+          // Agar server bilan aloqa yo'q bo'lsa, localStorage dagi user ni ishlatamiz
+          console.log('⚠️ Server xato, localStorage ishlatilmoqda');
+        }
+      } else {
+        console.log('❌ Token yoki user yo\'q, loading = false');
+        setLoading(false);
       }
     } catch (error) {
+      // Faqat JSON parse error bo'lsa localStorage ni tozalaymiz
+      console.error('❌ checkAuth ERROR:', error);
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
-    } finally {
+      setUser(null);
       setLoading(false);
     }
+    console.log('🏁 checkAuth END');
   };
 
   const login = async (loginName, password, computerNumber) => {
@@ -54,8 +81,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
+    try {
+      await authService.logout();
+    } catch (error) {
+      // Xatolik bo'lsa ham localStorage ni tozalaymiz
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      setUser(null);
+    }
   };
 
   const value = {

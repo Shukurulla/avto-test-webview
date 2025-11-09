@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -10,6 +11,20 @@ import TestResults from './pages/student/TestResults';
 import TestHistory from './pages/student/TestHistory';
 
 function App() {
+  useEffect(() => {
+    // Ong klik (context menu)ni bloklash
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+      return false;
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <Router>

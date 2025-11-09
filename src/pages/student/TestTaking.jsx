@@ -278,7 +278,7 @@ const TestTaking = () => {
         {/* Rasm va javoblar yonma-yon */}
         <div className="content-row">
           {/* Rasm (chap tomonda, agar mavjud bo'lsa) */}
-          {questionImage && (
+          {questionImage ? (
             <div className="question-image-section">
               <img
                 src={`https://webview-server.test-avtomaktab.uz/${questionImage}`}
@@ -289,12 +289,16 @@ const TestTaking = () => {
                 Rasmni kattalashtirish uchun F tugmasini bosing
               </p>
             </div>
+          ) : (
+            <div className="question-image-section no-image">
+              <div className="no-image-placeholder">
+                <p>Bu test uchun rasm yo'q</p>
+              </div>
+            </div>
           )}
 
-          {/* Javob variantlari (o'ng tomonda yoki to'liq kenglikda) */}
-          <div
-            className={`answers-section ${!questionImage ? "full-width" : ""}`}
-          >
+          {/* Javob variantlari (o'ng tomonda) */}
+          <div className="answers-section">
             <div className="answers-grid">
               {currentQuestion.answers.map((answer, index) => {
                 // Get answer text (type 1 = text for answers as well)

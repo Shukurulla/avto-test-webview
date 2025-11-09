@@ -126,8 +126,7 @@
 
 .question-container {
   flex: 1;
-  max-width: 1200px;
-  width: 100%;
+  width: 95%;
   margin: 30px auto;
   background: #3a4554;
   border-radius: 15px;
@@ -176,6 +175,33 @@
   color: #aaa;
   font-size: 14px;
   font-style: italic;
+}
+
+/* Rasm yo'q bo'lgan holat uchun */
+.question-image-section.no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.no-image-placeholder {
+  background: #2a3240;
+  border: 2px dashed #555;
+  border-radius: 10px;
+  padding: 60px 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-image-placeholder p {
+  color: #999;
+  font-size: 16px;
+  font-style: italic;
+  margin: 0;
+  text-align: center;
 }
 
 /* Javoblar bo'limi (chap tomonda) */
