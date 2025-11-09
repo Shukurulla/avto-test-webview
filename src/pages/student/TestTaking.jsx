@@ -162,42 +162,53 @@ const TestTaking = () => {
     ]
   );
 
-  // Keyboard shortcuts
-  const handleKeyPress = useCallback(
-    (e) => {
+  // Function key handler to prevent browser defaults
+  const handleFunctionKey = useCallback(
+    (e, answerIndex) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       if (showFeedback || !testData) return;
 
       const currentQuestion = testData.questions[currentQuestionIndex];
       const answerCount = currentQuestion?.answers?.length || 0;
 
-      // Prevent default for function keys
-      if (e.key.startsWith("F") && !isNaN(e.key.substring(1))) {
-        e.preventDefault();
+      // Faqat variant mavjud bo'lsagina selectAnswer ni chaqir
+      if (answerIndex < answerCount) {
+        selectAnswer(answerIndex);
       }
+    },
+    [showFeedback, testData, currentQuestionIndex, selectAnswer]
+  );
 
+  // Keyboard shortcuts
+  const handleKeyPress = useCallback(
+    (e) => {
       switch (e.key) {
         case "F1":
-          if (answerCount >= 1) selectAnswer(0);
+          handleFunctionKey(e, 0);
           break;
         case "F2":
-          if (answerCount >= 2) selectAnswer(1);
+          handleFunctionKey(e, 1);
           break;
         case "F3":
-          if (answerCount >= 3) selectAnswer(2);
+          handleFunctionKey(e, 2);
           break;
         case "F4":
-          if (answerCount >= 4) selectAnswer(3);
+          handleFunctionKey(e, 3);
           break;
         case "F5":
-          if (answerCount >= 5) selectAnswer(4);
+          handleFunctionKey(e, 4);
           break;
         case "f":
         case "F":
           e.preventDefault();
+          e.stopPropagation();
           setShowImageModal((prev) => !prev);
           break;
         case "Escape":
           e.preventDefault();
+          e.stopPropagation();
           if (showImageModal) {
             setShowImageModal(false);
           } else if (showExitModal) {
@@ -209,6 +220,7 @@ const TestTaking = () => {
         case "Enter":
           if (showExitModal) {
             e.preventDefault();
+            e.stopPropagation();
             handleExitConfirm();
           }
           break;
@@ -217,12 +229,9 @@ const TestTaking = () => {
       }
     },
     [
-      showFeedback,
-      testData,
-      currentQuestionIndex,
       showImageModal,
       showExitModal,
-      selectAnswer,
+      handleFunctionKey,
       handleExitConfirm,
     ]
   );
