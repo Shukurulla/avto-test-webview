@@ -281,7 +281,7 @@ const TestTaking = () => {
           {questionImage && (
             <div className="question-image-section">
               <img
-                src={`/${questionImage}`}
+                src={`https://webview-server.test-avtomaktab.uz/${questionImage}`}
                 alt="Savol rasmi"
                 onClick={() => setShowImageModal(true)}
               />
@@ -392,7 +392,7 @@ const TestTaking = () => {
         <div className="modal-overlay" onClick={() => setShowImageModal(false)}>
           <div className="modal-content image-modal">
             <img
-              src={`https://webview-server.test-avtomaktab.uz${questionImage}`}
+              src={`https://webview-server.test-avtomaktab.uz/${questionImage}`}
               alt="Savol rasmi"
             />
             <p>F yoki ESC tugmasini bosing yopish uchun</p>
