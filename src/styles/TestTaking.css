@@ -382,17 +382,13 @@
 .pagination-grid {
   display: flex;
   gap: 10px;
-  justify-items: center;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* 20 talik test uchun - bir qatorda, 80% width */
 .question-pagination.test-20 {
   width: 80%;
-}
-
-.question-pagination.test-20 .pagination-grid {
-  grid-template-columns: repeat(20, 1fr);
 }
 
 /* 50 talik test uchun - 25x25 ikki qatorda, 90% width */
@@ -401,8 +397,11 @@
 }
 
 .question-pagination.test-50 .pagination-grid {
-  grid-template-columns: repeat(25, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  max-width: 100%;
+}
+
+.question-pagination.test-50 .page-btn {
+  flex: 0 0 calc((100% - 240px) / 25); /* 25 ta button, 24 ta gap (10px har biri) */
 }
 
 .page-btn {
