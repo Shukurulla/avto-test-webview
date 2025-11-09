@@ -46,10 +46,12 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${token}`;
         return api(originalRequest);
       } catch (refreshError) {
+        // Faqat refresh token ham yaroqsiz bo'lsa localStorage ni tozalaymiz
+        console.error('❌ Refresh token ham yaroqsiz!');
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-        window.location.href = "/login";
+        // window.location.href ni ishlatmaslik - PrivateRoute handle qiladi
         return Promise.reject(refreshError);
       }
     }

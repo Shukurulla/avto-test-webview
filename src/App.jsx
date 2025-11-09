@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 
 // Pages
@@ -9,6 +9,21 @@ import TestSelection from './pages/student/TestSelection';
 import TestTaking from './pages/student/TestTaking';
 import TestResults from './pages/student/TestResults';
 import TestHistory from './pages/student/TestHistory';
+
+// Root redirect component
+const RootRedirect = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div>Yuklanmoqda...</div>
+      </div>
+    );
+  }
+
+  return user ? <Navigate to="/test/select" replace /> : <Navigate to="/login" replace />;
+};
 
 function App() {
   useEffect(() => {
@@ -46,7 +61,7 @@ function App() {
             }
           />
 
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<RootRedirect />} />
         </Routes>
       </Router>
     </AuthProvider>

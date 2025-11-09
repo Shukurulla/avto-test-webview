@@ -128,6 +128,7 @@
   flex: 1;
   width: 95%;
   margin: 30px auto;
+  margin-bottom: 140px;
   background: #3a4554;
   border-radius: 15px;
   padding: 40px;
@@ -149,9 +150,9 @@
   margin-top: 30px;
 }
 
-/* Rasm bo'limi (o'ng tomonda) */
+/* Rasm bo'limi (o'ng tomonda - 30%) */
 .question-image-section {
-  flex: 0 0 45%;
+  flex: 0 0 65%;
   text-align: center;
   cursor: pointer;
   order: 2;
@@ -217,26 +218,27 @@
 
 .answers-grid {
   display: grid;
-  gap: 15px;
+  gap: 10px;
 }
 
 .answer-option {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 12px 15px;
   background: #4a5568;
-  border: 3px solid #555;
-  border-radius: 10px;
+  border: 2px solid #555;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-align: left;
   color: white;
+  min-height: 50px;
 }
 
 .answer-option:hover:not(:disabled) {
   background: #556070;
   border-color: #f9a825;
-  transform: translateX(5px);
+  transform: translateX(3px);
 }
 
 .answer-option:disabled {
@@ -258,32 +260,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   background: #f9a825;
   color: #000;
   border-radius: 50%;
   font-weight: bold;
-  font-size: 18px;
-  margin-right: 15px;
+  font-size: 16px;
+  margin-right: 12px;
   flex-shrink: 0;
 }
 
 .answer-text {
   flex: 1;
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.4;
   color: white;
 }
 
 .answer-shortcut {
   background: #2a3240;
   color: #f9a825;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
   font-family: monospace;
-  margin-left: 15px;
+  margin-left: 10px;
   flex-shrink: 0;
 }
 
@@ -363,27 +365,58 @@
 
 /* Savol paginatsiyasi */
 .question-pagination {
-  margin-top: 40px;
-  padding-top: 30px;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2a3240;
   border-top: 2px solid #555;
+  padding: 12px 20px;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  border-radius: 10px 10px 0 0;
+}
+
+.pagination-grid {
+  display: flex;
   gap: 10px;
+  justify-items: center;
   justify-content: center;
 }
 
+/* 20 talik test uchun - bir qatorda, 80% width */
+.question-pagination.test-20 {
+  width: 80%;
+}
+
+.question-pagination.test-20 .pagination-grid {
+  grid-template-columns: repeat(20, 1fr);
+}
+
+/* 50 talik test uchun - 25x25 ikki qatorda, 90% width */
+.question-pagination.test-50 {
+  width: 90%;
+}
+
+.question-pagination.test-50 .pagination-grid {
+  grid-template-columns: repeat(25, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
 .page-btn {
-  min-width: 45px;
-  height: 45px;
-  padding: 10px;
+  min-width: 40px;
+  height: 40px;
+  padding: 8px;
   background: #4a5568;
   border: 2px solid #555;
-  border-radius: 8px;
+  border-radius: 6px;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .page-btn:hover:not(:disabled) {

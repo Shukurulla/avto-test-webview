@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/LoginPage.css';
@@ -10,8 +10,15 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login: authLogin } = useAuth();
+  const { login: authLogin, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Agar user allaqachon kirgan bo'lsa, test selection sahifasiga o'tkazish
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/test/select', { replace: true });
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

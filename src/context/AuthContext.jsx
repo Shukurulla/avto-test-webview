@@ -19,47 +19,41 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const checkAuth = async () => {
-    console.log('🔍 checkAuth START');
+  const checkAuth = () => {
+    console.log('🔍 checkAuth BOSHLANDI');
     try {
       const token = localStorage.getItem('token');
       const storedUser = localStorage.getItem('user');
 
-      console.log('📝 token:', token ? 'MAVJUD ✅' : 'YO\'Q ❌');
-      console.log('📝 storedUser:', storedUser ? 'MAVJUD ✅' : 'YO\'Q ❌');
+      console.log('📦 localStorage:', {
+        hasToken: !!token,
+        hasUser: !!storedUser,
+        token: token ? token.substring(0, 20) + '...' : null,
+        user: storedUser ? JSON.parse(storedUser).login : null
+      });
 
       if (token && storedUser) {
-        // Avval localStorage dan user ni yuklash
+        // localStorage dan user ni yuklash va ishlatish
         const parsedUser = JSON.parse(storedUser);
-        console.log('👤 parsedUser:', parsedUser);
+        console.log('👤 Parsed user:', parsedUser.login);
         setUser(parsedUser);
-        setLoading(false); // Darhol loading ni false qilish
-        console.log('✅ User set qilindi va loading = false');
-
-        // Keyin server dan yangi ma'lumot olish
-        try {
-          const response = await authService.getMe();
-          console.log('🌐 Server response:', response.data);
-          setUser(response.data.user);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-        } catch (error) {
-          // Agar server bilan aloqa yo'q bo'lsa, localStorage dagi user ni ishlatamiz
-          console.log('⚠️ Server xato, localStorage ishlatilmoqda');
-        }
+        console.log('✅ User o\'rnatildi');
       } else {
-        console.log('❌ Token yoki user yo\'q, loading = false');
-        setLoading(false);
+        console.log('❌ Token yoki user yo\'q!');
+        setUser(null);
       }
     } catch (error) {
+      console.error('💥 checkAuth XATO:', error);
       // Faqat JSON parse error bo'lsa localStorage ni tozalaymiz
-      console.error('❌ checkAuth ERROR:', error);
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
       setUser(null);
+    } finally {
+      // Loading ni har doim oxirida false qilish
       setLoading(false);
+      console.log('🏁 checkAuth TUGADI, loading = false');
     }
-    console.log('🏁 checkAuth END');
   };
 
   const login = async (loginName, password, computerNumber) => {

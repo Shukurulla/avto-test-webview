@@ -116,27 +116,6 @@ const TestResults = () => {
           </div>
         </div>
 
-        <div className="test-details">
-          <h3>Test ma'lumotlari</h3>
-          <p>
-            <strong>Test turi:</strong>{' '}
-            {result.testType === 50 ? '50 savollik test' : '20 savollik test'}
-          </p>
-          {result.templateId && (
-            <p>
-              <strong>Shablon:</strong> #{result.templateId}
-            </p>
-          )}
-          <p>
-            <strong>Boshlangan:</strong>{' '}
-            {new Date(result.startedAt).toLocaleString('uz-UZ')}
-          </p>
-          <p>
-            <strong>Tugatilgan:</strong>{' '}
-            {new Date(result.completedAt).toLocaleString('uz-UZ')}
-          </p>
-        </div>
-
         <div className="actions">
           <button onClick={() => navigate('/test/select')} className="btn-primary">
             Yangi Test Topshirish

@@ -365,29 +365,31 @@ const TestTaking = () => {
         )}
 
         {/* Savol paginatsiyasi */}
-        <div className="question-pagination">
-          {testData.questions.map((_, index) => {
-            const answer = answers[index];
-            let btnClass = "page-btn";
-            if (index === currentQuestionIndex) btnClass += " active";
-            if (answer !== null) {
-              // To'g'ri javob - yashil, noto'g'ri - qizil
-              btnClass += answer.isCorrect
-                ? " answered-correct"
-                : " answered-incorrect";
-            }
+        <div className={`question-pagination test-${testData.testType}`}>
+          <div className="pagination-grid">
+            {testData.questions.map((_, index) => {
+              const answer = answers[index];
+              let btnClass = "page-btn";
+              if (index === currentQuestionIndex) btnClass += " active";
+              if (answer !== null) {
+                // To'g'ri javob - yashil, noto'g'ri - qizil
+                btnClass += answer.isCorrect
+                  ? " answered-correct"
+                  : " answered-incorrect";
+              }
 
-            return (
-              <button
-                key={index}
-                className={btnClass}
-                onClick={() => setCurrentQuestionIndex(index)}
-                disabled={showFeedback}
-              >
-                {index + 1}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={index}
+                  className={btnClass}
+                  onClick={() => setCurrentQuestionIndex(index)}
+                  disabled={showFeedback}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
