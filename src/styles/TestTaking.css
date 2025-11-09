@@ -31,13 +31,6 @@
   font-weight: 600;
 }
 
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  background: #4a7fff;
-  border-radius: 50%;
-}
-
 .nav-center {
   display: flex;
   align-items: center;

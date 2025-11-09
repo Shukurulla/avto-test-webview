@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { testService } from "../../services/testService";
 import "../../styles/TestTaking.css";
+import { Logo } from "../../../public";
 
 const TestTaking = () => {
   const navigate = useNavigate();
@@ -249,7 +250,9 @@ const TestTaking = () => {
       <header className="test-header">
         <div className="nav-left">
           <div className="logo">
-            <div className="logo-icon"></div>
+            <div className="logo-icon">
+              <img src={Logo} className="logo-img" alt="" />
+            </div>
             <span>Avto Test Nukus</span>
           </div>
         </div>

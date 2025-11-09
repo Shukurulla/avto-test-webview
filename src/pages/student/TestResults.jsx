@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { testService } from '../../services/testService';
-import '../../styles/TestResults.css';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { testService } from "../../services/testService";
+import "../../styles/TestResults.css";
 
 const TestResults = () => {
   const { id } = useParams();
@@ -9,7 +9,7 @@ const TestResults = () => {
 
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchResult();
@@ -21,7 +21,7 @@ const TestResults = () => {
       const response = await testService.getTestResult(id);
       setResult(response.data);
     } catch (err) {
-      setError(err.response?.data?.error || 'Natijalarni yuklashda xatolik');
+      setError(err.response?.data?.error || "Natijalarni yuklashda xatolik");
     } finally {
       setLoading(false);
     }
@@ -35,7 +35,10 @@ const TestResults = () => {
     return (
       <div className="error-container">
         <div className="error-message">{error}</div>
-        <button onClick={() => navigate('/test/select')} className="btn-primary">
+        <button
+          onClick={() => navigate("/test/select")}
+          className="btn-primary"
+        >
           Bosh sahifaga qaytish
         </button>
       </div>
@@ -57,13 +60,13 @@ const TestResults = () => {
   return (
     <div className="test-results">
       <div className="results-container">
-        <div className={`results-header ${passed ? 'passed' : 'failed'}`}>
-          <div className="result-icon">{passed ? '✓' : '✗'}</div>
-          <h1>{passed ? 'Tabriklaymiz!' : 'Afsuski...'}</h1>
+        <div className={`results-header ${passed ? "passed" : "failed"}`}>
+          <div className="result-icon">{passed ? "✓" : "✗"}</div>
+          <h1>{passed ? "Tabriklaymiz!" : "Afsuski..."}</h1>
           <p className="result-message">
             {passed
-              ? 'Siz testdan muvaffaqiyatli o\'tdingiz!'
-              : 'Siz testdan o\'ta olmadingiz. Qaytadan urinib ko\'ring!'}
+              ? "Siz testdan muvaffaqiyatli o'tdingiz!"
+              : "Siz testdan o'ta olmadingiz. Qaytadan urinib ko'ring!"}
           </p>
         </div>
 
@@ -83,7 +86,7 @@ const TestResults = () => {
                 cy="100"
                 r="90"
                 fill="none"
-                stroke={passed ? '#28a745' : '#dc3545'}
+                stroke={passed ? "#28a745" : "#dc3545"}
                 strokeWidth="20"
                 strokeDasharray={`${(result.score / 100) * 565} 565`}
                 strokeDashoffset="0"
@@ -117,11 +120,11 @@ const TestResults = () => {
         </div>
 
         <div className="actions">
-          <button onClick={() => navigate('/test/select')} className="btn-primary">
+          <button
+            onClick={() => navigate("/test/select")}
+            className="btn-primary"
+          >
             Yangi Test Topshirish
-          </button>
-          <button onClick={() => navigate('/test/history')} className="btn-secondary">
-            Test Tarixi
           </button>
         </div>
       </div>

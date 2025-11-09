@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { testService } from "../../services/testService";
 import "../../styles/TestSelection.css";
+import { Logo } from "../../../public";
 
 const TestSelection = () => {
   const { logout, user } = useAuth();
@@ -73,7 +74,9 @@ const TestSelection = () => {
       <header className="top-nav">
         <div className="nav-left">
           <div className="logo">
-            <div className="logo-icon"></div>
+            <div className="logo-icon">
+              <img src={Logo} className="logo-img" alt="" />
+            </div>
             <span>Avto Test Nukus</span>
           </div>
         </div>
