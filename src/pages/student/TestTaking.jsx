@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { testService } from '../../services/testService';
-import '../../styles/TestTaking.css';
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { testService } from "../../services/testService";
+import "../../styles/TestTaking.css";
 
 const TestTaking = () => {
   const navigate = useNavigate();
@@ -17,9 +17,9 @@ const TestTaking = () => {
   const [showExitModal, setShowExitModal] = useState(false);
 
   useEffect(() => {
-    const storedTest = sessionStorage.getItem('currentTest');
+    const storedTest = sessionStorage.getItem("currentTest");
     if (!storedTest) {
-      navigate('/test/select');
+      navigate("/test/select");
       return;
     }
 
@@ -43,7 +43,7 @@ const TestTaking = () => {
           await elem.msRequestFullscreen();
         }
       } catch (err) {
-        console.log('Fullscreen error:', err);
+        console.log("Fullscreen error:", err);
       }
     };
     enterFullscreen();
@@ -88,68 +88,78 @@ const TestTaking = () => {
         startedAt: testData.startedAt,
       });
 
-      sessionStorage.removeItem('currentTest');
+      sessionStorage.removeItem("currentTest");
       navigate(`/test/results/${result.data.id}`);
     } catch (err) {
-      alert('Testni tugatishda xatolik');
+      alert("Testni tugatishda xatolik");
     }
   }, [testData, answers, navigate]);
 
   const handleExitConfirm = useCallback(() => {
-    sessionStorage.removeItem('currentTest');
-    navigate('/test/select');
+    sessionStorage.removeItem("currentTest");
+    navigate("/test/select");
   }, [navigate]);
 
   // Select answer function with useCallback
-  const selectAnswer = useCallback(async (answerIndex) => {
-    if (showFeedback || !testData) return;
+  const selectAnswer = useCallback(
+    async (answerIndex) => {
+      if (showFeedback || !testData) return;
 
-    // Agar bu savolga allaqachon javob berilgan bo'lsa, qayta javob berishga ruxsat berma
-    if (answers[currentQuestionIndex] !== null) return;
+      // Agar bu savolga allaqachon javob berilgan bo'lsa, qayta javob berishga ruxsat berma
+      if (answers[currentQuestionIndex] !== null) return;
 
-    const currentQuestion = testData.questions[currentQuestionIndex];
-    const selectedAnswer = currentQuestion.answers[answerIndex];
+      const currentQuestion = testData.questions[currentQuestionIndex];
+      const selectedAnswer = currentQuestion.answers[answerIndex];
 
-    if (!selectedAnswer) return;
+      if (!selectedAnswer) return;
 
-    try {
-      const response = await testService.submitAnswer(
-        currentQuestion.questionId,
-        currentLanguage,
-        selectedAnswer.id
-      );
+      try {
+        const response = await testService.submitAnswer(
+          currentQuestion.questionId,
+          currentLanguage,
+          selectedAnswer.id
+        );
 
-      setFeedbackData(response.data);
-      setShowFeedback(true);
+        setFeedbackData(response.data);
+        setShowFeedback(true);
 
-      // Update answers array
-      setAnswers(prevAnswers => {
-        const newAnswers = [...prevAnswers];
-        newAnswers[currentQuestionIndex] = {
-          questionId: currentQuestion.questionId,
-          langId: currentLanguage,
-          userAnswer: selectedAnswer.id,
-          isCorrect: response.data.isCorrect,
-          correctAnswerId: response.data.correctAnswerId,
-        };
-        return newAnswers;
-      });
+        // Update answers array
+        setAnswers((prevAnswers) => {
+          const newAnswers = [...prevAnswers];
+          newAnswers[currentQuestionIndex] = {
+            questionId: currentQuestion.questionId,
+            langId: currentLanguage,
+            userAnswer: selectedAnswer.id,
+            isCorrect: response.data.isCorrect,
+            correctAnswerId: response.data.correctAnswerId,
+          };
+          return newAnswers;
+        });
 
-      // Auto advance after 1 second
-      setTimeout(() => {
-        setShowFeedback(false);
-        setFeedbackData(null);
+        // Auto advance after 1 second
+        setTimeout(() => {
+          setShowFeedback(false);
+          setFeedbackData(null);
 
-        if (currentQuestionIndex < testData.questions.length - 1) {
-          setCurrentQuestionIndex((prev) => prev + 1);
-        } else {
-          handleFinishTest();
-        }
-      }, 1000);
-    } catch (err) {
-      alert('Javobni yuborishda xatolik');
-    }
-  }, [showFeedback, testData, currentQuestionIndex, currentLanguage, answers, handleFinishTest]);
+          if (currentQuestionIndex < testData.questions.length - 1) {
+            setCurrentQuestionIndex((prev) => prev + 1);
+          } else {
+            handleFinishTest();
+          }
+        }, 1000);
+      } catch (err) {
+        alert("Javobni yuborishda xatolik");
+      }
+    },
+    [
+      showFeedback,
+      testData,
+      currentQuestionIndex,
+      currentLanguage,
+      answers,
+      handleFinishTest,
+    ]
+  );
 
   // Keyboard shortcuts
   const handleKeyPress = useCallback(
@@ -157,32 +167,32 @@ const TestTaking = () => {
       if (showFeedback) return;
 
       // Prevent default for function keys
-      if (e.key.startsWith('F') && !isNaN(e.key.substring(1))) {
+      if (e.key.startsWith("F") && !isNaN(e.key.substring(1))) {
         e.preventDefault();
       }
 
       switch (e.key) {
-        case 'F1':
+        case "F1":
           selectAnswer(0);
           break;
-        case 'F2':
+        case "F2":
           selectAnswer(1);
           break;
-        case 'F3':
+        case "F3":
           selectAnswer(2);
           break;
-        case 'F4':
+        case "F4":
           selectAnswer(3);
           break;
-        case 'F5':
+        case "F5":
           selectAnswer(4);
           break;
-        case 'f':
-        case 'F':
+        case "f":
+        case "F":
           e.preventDefault();
           setShowImageModal((prev) => !prev);
           break;
-        case 'Escape':
+        case "Escape":
           e.preventDefault();
           if (showImageModal) {
             setShowImageModal(false);
@@ -192,7 +202,7 @@ const TestTaking = () => {
             setShowExitModal(true);
           }
           break;
-        case 'Enter':
+        case "Enter":
           if (showExitModal) {
             e.preventDefault();
             handleExitConfirm();
@@ -202,12 +212,18 @@ const TestTaking = () => {
           break;
       }
     },
-    [showFeedback, showImageModal, showExitModal, selectAnswer, handleExitConfirm]
+    [
+      showFeedback,
+      showImageModal,
+      showExitModal,
+      selectAnswer,
+      handleExitConfirm,
+    ]
   );
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [handleKeyPress]);
 
   if (!testData) {
@@ -218,13 +234,13 @@ const TestTaking = () => {
   const questionBody = currentQuestion.body;
 
   // Get question text (type 1 = text, type 2 = image)
-  const questionText = questionBody.find((b) => b.type === 1)?.value || '';
+  const questionText = questionBody.find((b) => b.type === 1)?.value || "";
   const questionImage = currentQuestion.imagePath;
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -238,13 +254,18 @@ const TestTaking = () => {
           </div>
         </div>
         <div className="nav-center">
-          <button className="exit-test-btn" onClick={() => setShowExitModal(true)}>
+          <button
+            className="exit-test-btn"
+            onClick={() => setShowExitModal(true)}
+          >
             Testdan chiqish
             <span className="exit-shortcut">ESC</span>
           </button>
         </div>
         <div className="nav-right">
-          <span className="question-counter">- {currentQuestionIndex + 1} -</span>
+          <span className="question-counter">
+            - {currentQuestionIndex + 1} -
+          </span>
           <span className="timer">{formatTime(timeRemaining)}</span>
         </div>
       </header>
@@ -264,43 +285,50 @@ const TestTaking = () => {
                 alt="Savol rasmi"
                 onClick={() => setShowImageModal(true)}
               />
-              <p className="image-hint">Rasmni kattalashtirish uchun F tugmasini bosing</p>
+              <p className="image-hint">
+                Rasmni kattalashtirish uchun F tugmasini bosing
+              </p>
             </div>
           )}
 
           {/* Javob variantlari (o'ng tomonda yoki to'liq kenglikda) */}
-          <div className={`answers-section ${!questionImage ? 'full-width' : ''}`}>
+          <div
+            className={`answers-section ${!questionImage ? "full-width" : ""}`}
+          >
             <div className="answers-grid">
               {currentQuestion.answers.map((answer, index) => {
                 // Get answer text (type 1 = text for answers as well)
-                const answerText = answer.body.find((b) => b.type === 1)?.value || '';
+                const answerText =
+                  answer.body.find((b) => b.type === 1)?.value || "";
                 const label = String.fromCharCode(65 + index); // A, B, C, D...
                 const shortcutKey = `F${index + 1}`;
 
                 const currentAnswer = answers[currentQuestionIndex];
-                let className = 'answer-option';
+                let className = "answer-option";
 
                 // Agar bu savolga oldin javob berilgan bo'lsa
                 if (currentAnswer) {
                   // Foydalanuvchi tanlagan javob
                   if (currentAnswer.userAnswer === answer.id) {
-                    className += currentAnswer.isCorrect ? ' correct' : ' incorrect';
+                    className += currentAnswer.isCorrect
+                      ? " correct"
+                      : " incorrect";
                   }
                   // To'g'ri javobni ham ko'rsatish
                   if (currentAnswer.correctAnswerId === answer.id) {
-                    className += ' correct';
+                    className += " correct";
                   }
                 }
 
                 // Feedback ko'rsatilayotganda
                 if (showFeedback && feedbackData) {
                   if (answer.id === feedbackData.correctAnswerId) {
-                    className += ' correct';
+                    className += " correct";
                   } else if (
                     currentAnswer?.userAnswer === answer.id &&
                     !feedbackData.isCorrect
                   ) {
-                    className += ' incorrect';
+                    className += " incorrect";
                   }
                 }
 
@@ -323,8 +351,12 @@ const TestTaking = () => {
 
         {/* Feedback */}
         {showFeedback && feedbackData && (
-          <div className={`feedback ${feedbackData.isCorrect ? 'correct' : 'incorrect'}`}>
-            {feedbackData.isCorrect ? '✓ To\'g\'ri!' : '✗ Noto\'g\'ri!'}
+          <div
+            className={`feedback ${
+              feedbackData.isCorrect ? "correct" : "incorrect"
+            }`}
+          >
+            {feedbackData.isCorrect ? "✓ To'g'ri!" : "✗ Noto'g'ri!"}
           </div>
         )}
 
@@ -332,11 +364,13 @@ const TestTaking = () => {
         <div className="question-pagination">
           {testData.questions.map((_, index) => {
             const answer = answers[index];
-            let btnClass = 'page-btn';
-            if (index === currentQuestionIndex) btnClass += ' active';
+            let btnClass = "page-btn";
+            if (index === currentQuestionIndex) btnClass += " active";
             if (answer !== null) {
               // To'g'ri javob - yashil, noto'g'ri - qizil
-              btnClass += answer.isCorrect ? ' answered-correct' : ' answered-incorrect';
+              btnClass += answer.isCorrect
+                ? " answered-correct"
+                : " answered-incorrect";
             }
 
             return (
@@ -357,7 +391,10 @@ const TestTaking = () => {
       {showImageModal && questionImage && (
         <div className="modal-overlay" onClick={() => setShowImageModal(false)}>
           <div className="modal-content image-modal">
-            <img src={`/${questionImage}`} alt="Savol rasmi" />
+            <img
+              src={`https://webview-server.test-avtomaktab.uz${questionImage}`}
+              alt="Savol rasmi"
+            />
             <p>F yoki ESC tugmasini bosing yopish uchun</p>
           </div>
         </div>
@@ -373,7 +410,10 @@ const TestTaking = () => {
               <button onClick={handleExitConfirm} className="btn-danger">
                 Ha, chiqish
               </button>
-              <button onClick={() => setShowExitModal(false)} className="btn-secondary">
+              <button
+                onClick={() => setShowExitModal(false)}
+                className="btn-secondary"
+              >
                 Yo'q, davom etish
               </button>
             </div>
