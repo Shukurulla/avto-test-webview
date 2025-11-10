@@ -17,6 +17,7 @@ const TestTaking = () => {
   const [feedbackData, setFeedbackData] = useState(null);
   const [showExitModal, setShowExitModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const storedTest = sessionStorage.getItem("currentTest");
@@ -33,7 +34,7 @@ const TestTaking = () => {
     // Initialize answers array
     setAnswers(new Array(test.questions.length).fill(null));
 
-    // Enter fullscreen mode
+    // Enter fullscreen mode (optional - may fail if not triggered by user gesture)
     const enterFullscreen = async () => {
       try {
         const elem = document.documentElement;
@@ -45,7 +46,8 @@ const TestTaking = () => {
           await elem.msRequestFullscreen();
         }
       } catch (err) {
-        console.log("Fullscreen error:", err);
+        // Fullscreen API requires user gesture - silently fail
+        // User can still manually enter fullscreen (F11)
       }
     };
     enterFullscreen();
@@ -164,10 +166,10 @@ const TestTaking = () => {
           setShowFeedback(false);
           setFeedbackData(null);
 
+          // Faqat oxirgi savoldan oldingi savollarda keyingi savolga o'tish
+          // Oxirgi savolda qolish va foydalanuvchi o'zi yakunlashi kerak
           if (currentQuestionIndex < testData.questions.length - 1) {
             setCurrentQuestionIndex((prev) => prev + 1);
-          } else {
-            handleFinishTest();
           }
 
           // Keyingi savol uchun isProcessing ni false qilish (500ms qo'shimcha kutish)
@@ -230,6 +232,42 @@ const TestTaking = () => {
         case "F5":
           handleFunctionKey(e, 4);
           break;
+        case "ArrowLeft":
+          // Chap o'q - oldingi savol
+          if (!isProcessing && !showFeedback && currentQuestionIndex > 0) {
+            e.preventDefault();
+            setCurrentQuestionIndex((prev) => prev - 1);
+          }
+          break;
+        case "ArrowRight":
+          // O'ng o'q - keyingi savol
+          if (!isProcessing && !showFeedback && currentQuestionIndex < testData.questions.length - 1) {
+            e.preventDefault();
+            setCurrentQuestionIndex((prev) => prev + 1);
+          }
+          break;
+        case "ArrowUp":
+          // Yuqoriga o'q - pagination gridda yuqoriga
+          if (!isProcessing && !showFeedback) {
+            e.preventDefault();
+            const columnsPerRow = testData.testType === 50 ? 25 : 20;
+            const newIndex = currentQuestionIndex - columnsPerRow;
+            if (newIndex >= 0) {
+              setCurrentQuestionIndex(newIndex);
+            }
+          }
+          break;
+        case "ArrowDown":
+          // Pastga o'q - pagination gridda pastga
+          if (!isProcessing && !showFeedback) {
+            e.preventDefault();
+            const columnsPerRow = testData.testType === 50 ? 25 : 20;
+            const newIndex = currentQuestionIndex + columnsPerRow;
+            if (newIndex < testData.questions.length) {
+              setCurrentQuestionIndex(newIndex);
+            }
+          }
+          break;
         case "f":
         case "F":
           e.preventDefault();
@@ -259,8 +297,12 @@ const TestTaking = () => {
       }
     },
     [
+      isProcessing,
+      showFeedback,
       showImageModal,
       showExitModal,
+      currentQuestionIndex,
+      testData,
       handleFunctionKey,
       handleExitConfirm,
     ]
@@ -270,6 +312,11 @@ const TestTaking = () => {
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [handleKeyPress]);
+
+  // Savol o'zgarganda imageError ni reset qilish
+  useEffect(() => {
+    setImageError(false);
+  }, [currentQuestionIndex]);
 
   if (!testData) {
     return (
@@ -287,11 +334,36 @@ const TestTaking = () => {
   const questionText = questionBody.find((b) => b.type === 1)?.value || "";
   const questionImage = currentQuestion.imagePath;
 
+  // Rasm yo'lini olish - agar xatolik bo'lsa fallback URL ishlatish
+  const getImageUrl = () => {
+    if (!questionImage) return null;
+
+    if (imageError) {
+      // Agar asosiy rasm yuklanmasa, body dan to'liq yo'lni olish
+      const imageBodyItem = questionBody.find((b) => b.type === 2);
+      if (imageBodyItem && imageBodyItem.value) {
+        return `https://back.eavtotalim.uz${imageBodyItem.value}`;
+      }
+    }
+
+    return `https://webview-server.test-avtomaktab.uz/${questionImage}`;
+  };
+
+  const imageUrl = getImageUrl();
+
+  // Rasm yuklash xatosi
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
+  // Barcha savollarga javob berilganmi tekshirish
+  const allAnswered = answers.every((answer) => answer !== null);
 
   return (
     <div className="test-taking">
@@ -313,6 +385,15 @@ const TestTaking = () => {
             Testdan chiqish
             <span className="exit-shortcut">ESC</span>
           </button>
+          {allAnswered && (
+            <button
+              className="finish-test-btn"
+              onClick={handleFinishTest}
+              disabled={isProcessing}
+            >
+              Testni yakunlash
+            </button>
+          )}
         </div>
         <div className="nav-right">
           <span className="question-counter">
@@ -330,12 +411,13 @@ const TestTaking = () => {
         {/* Rasm va javoblar yonma-yon */}
         <div className="content-row">
           {/* Rasm (chap tomonda, agar mavjud bo'lsa) */}
-          {questionImage ? (
+          {imageUrl ? (
             <div className="question-image-section">
               <img
-                src={`https://webview-server.test-avtomaktab.uz/${questionImage}`}
+                src={imageUrl}
                 alt="Savol rasmi"
                 onClick={() => setShowImageModal(true)}
+                onError={handleImageError}
               />
               <p className="image-hint">
                 Rasmni kattalashtirish uchun F tugmasini bosing
@@ -446,12 +528,13 @@ const TestTaking = () => {
       </div>
 
       {/* Image Modal */}
-      {showImageModal && questionImage && (
+      {showImageModal && imageUrl && (
         <div className="modal-overlay" onClick={() => setShowImageModal(false)}>
           <div className="modal-content image-modal">
             <img
-              src={`https://webview-server.test-avtomaktab.uz/${questionImage}`}
+              src={imageUrl}
               alt="Savol rasmi"
+              onError={handleImageError}
             />
             <p>F yoki ESC tugmasini bosing yopish uchun</p>
           </div>

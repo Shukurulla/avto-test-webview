@@ -15,6 +15,9 @@
   align-items: center;
   gap: 20px;
 }
+.modal-content.exit-modal {
+  background: #2a3240;
+}
 
 .nav-left {
   display: flex;
@@ -34,6 +37,7 @@
 .nav-center {
   display: flex;
   align-items: center;
+  gap: 15px;
 }
 
 .exit-test-btn {
@@ -68,6 +72,48 @@
   font-size: 11px;
   font-family: monospace;
   font-weight: 500;
+}
+
+.finish-test-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+.finish-test-btn:hover {
+  background: #229954;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+}
+
+.finish-test-btn:active {
+  transform: translateY(0);
+}
+
+.finish-test-btn:disabled {
+  background: #666;
+  cursor: not-allowed;
+  animation: none;
+}
+
+@keyframes pulse-green {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(39, 174, 96, 0.3);
+  }
 }
 
 .nav-right {
@@ -334,10 +380,11 @@
 .exit-modal {
   max-width: 500px;
   text-align: center;
-  background: #3a4554;
+  background: #1e2530;
   color: white;
   border-radius: 10px;
   padding: 30px;
+  border: 2px solid #333;
 }
 
 .exit-modal h3 {
@@ -373,15 +420,18 @@
 }
 
 .pagination-grid {
-  display: flex;
+  display: grid;
   gap: 10px;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 /* 20 talik test uchun - bir qatorda, 80% width */
 .question-pagination.test-20 {
   width: 80%;
+}
+
+.question-pagination.test-20 .pagination-grid {
+  grid-template-columns: repeat(20, 1fr);
 }
 
 /* 50 talik test uchun - 25x25 ikki qatorda, 90% width */
@@ -390,11 +440,8 @@
 }
 
 .question-pagination.test-50 .pagination-grid {
+  grid-template-columns: repeat(25, 1fr);
   max-width: 100%;
-}
-
-.question-pagination.test-50 .page-btn {
-  flex: 0 0 calc((100% - 240px) / 25); /* 25 ta button, 24 ta gap (10px har biri) */
 }
 
 .page-btn {
