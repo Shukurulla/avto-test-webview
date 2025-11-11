@@ -12,6 +12,7 @@ const TestSelection = () => {
   const [testTypes, setTestTypes] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [startingTest, setStartingTest] = useState(false);
   const [error, setError] = useState("");
 
   const [selectedType, setSelectedType] = useState(50);
@@ -52,6 +53,9 @@ const TestSelection = () => {
     }
 
     try {
+      setStartingTest(true);
+      setError("");
+
       const testData = await testService.startTest(
         selectedType,
         selectedType === 20 ? selectedTemplate : null,
@@ -61,7 +65,8 @@ const TestSelection = () => {
       sessionStorage.setItem("currentTest", JSON.stringify(testData.data));
       navigate("/test/taking");
     } catch (err) {
-      alert(err.response?.data?.error || "Test boshlashda xatolik");
+      setError(err.response?.data?.error || "Test boshlashda xatolik");
+      setStartingTest(false);
     }
   };
 
@@ -70,6 +75,19 @@ const TestSelection = () => {
       <div className="loading">
         <img src={Logo} alt="Logo" className="loading-logo" />
         <div className="loading-text">Yuklanmoqda...</div>
+      </div>
+    );
+  }
+
+  if (startingTest) {
+    return (
+      <div className="loading">
+        <img src={Logo} alt="Logo" className="loading-logo" />
+        <div className="loading-text">
+          Test tayyorlanmoqda...
+          <br />
+          <small>Iltimos, kuting...</small>
+        </div>
       </div>
     );
   }
@@ -150,8 +168,12 @@ const TestSelection = () => {
             </div>
           )}
 
-          <button onClick={handleStartTest} className="start-button">
-            TESTNI BOSHLASH
+          <button
+            onClick={handleStartTest}
+            className="start-button"
+            disabled={startingTest}
+          >
+            {startingTest ? "Test tayyorlanmoqda..." : "TESTNI BOSHLASH"}
           </button>
 
           <div className="footer-text">

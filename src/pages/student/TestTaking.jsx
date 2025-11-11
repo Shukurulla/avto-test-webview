@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { testService } from "../../services/testService";
+import imagePreloader from "../../utils/imagePreloader";
+import { COMPRESSION_PRESETS } from "../../utils/imageCompressor";
 import "../../styles/TestTaking.css";
 import { Logo } from "../../../public";
 
@@ -18,6 +20,9 @@ const TestTaking = () => {
   const [showExitModal, setShowExitModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [imagesPreloading, setImagesPreloading] = useState(true);
+  const [preloadProgress, setPreloadProgress] = useState(0);
+  const [showPreloadIndicator, setShowPreloadIndicator] = useState(false);
 
   useEffect(() => {
     const storedTest = sessionStorage.getItem("currentTest");
@@ -33,6 +38,51 @@ const TestTaking = () => {
 
     // Initialize answers array
     setAnswers(new Array(test.questions.length).fill(null));
+
+    // Preload all images in background (non-blocking)
+    const preloadAllImages = async () => {
+      // Compression o'chirilgan - tezroq yuklash uchun
+      // Original rasmlar to'g'ridan-to'g'ri cache'ga saqlanadi
+      imagePreloader.setCompression(false);
+
+      // Barcha rasm URL'larni yig'ish
+      const imageUrls = test.questions
+        .map(q => {
+          if (!q.imagePath) return null;
+          return `https://webview-server.test-avtomaktab.uz/${q.imagePath}`;
+        })
+        .filter(Boolean);
+
+      console.log(`📸 ${imageUrls.length} ta rasmni fonda yuklash boshlandi (compression: OFF - tezroq)...`);
+
+      // 2 soniyadan keyin indicator'ni ko'rsatish (agar hali yuklanmagan bo'lsa)
+      const indicatorTimer = setTimeout(() => {
+        if (imagesPreloading) {
+          setShowPreloadIndicator(true);
+        }
+      }, 2000);
+
+      try {
+        await imagePreloader.preloadImages(imageUrls, (progress) => {
+          setPreloadProgress(progress.percentage);
+          console.log(`📊 Progress: ${progress.percentage}% (${progress.loadedSuccessfully}/${progress.total})`);
+        });
+
+        console.log('✅ Barcha rasmlar yuklandi!');
+      } catch (error) {
+        console.error('⚠️ Rasmlarni yuklashda xatolik:', error);
+      } finally {
+        clearTimeout(indicatorTimer);
+        setImagesPreloading(false);
+        setShowPreloadIndicator(false);
+      }
+    };
+
+    // Darhol test'ni ko'rsatish, rasmlarni fonda yuklash
+    setImagesPreloading(false);
+
+    // Background'da rasmlarni yuklash
+    preloadAllImages();
 
     // Enter fullscreen mode (optional - may fail if not triggered by user gesture)
     const enterFullscreen = async () => {
@@ -52,7 +102,7 @@ const TestTaking = () => {
     };
     enterFullscreen();
 
-    // Exit fullscreen on unmount
+    // Exit fullscreen on unmount and clear cache
     return () => {
       if (document.exitFullscreen) {
         document.exitFullscreen().catch(() => {});
@@ -61,6 +111,9 @@ const TestTaking = () => {
       } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
       }
+
+      // Cache'ni tozalash
+      imagePreloader.clear();
     };
   }, [navigate]);
 
@@ -318,6 +371,7 @@ const TestTaking = () => {
     setImageError(false);
   }, [currentQuestionIndex]);
 
+  // Faqat testData yo'q bo'lsa loading ko'rsatish
   if (!testData) {
     return (
       <div className="loading">
@@ -396,12 +450,41 @@ const TestTaking = () => {
           )}
         </div>
         <div className="nav-right">
+          {showPreloadIndicator && (
+            <span className="preload-indicator" style={{
+              fontSize: '12px',
+              color: '#666',
+              marginRight: '15px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}>
+              <span style={{
+                display: 'inline-block',
+                width: '12px',
+                height: '12px',
+                border: '2px solid #ddd',
+                borderTopColor: '#4CAF50',
+                borderRadius: '50%',
+                animation: 'spin 0.8s linear infinite'
+              }}></span>
+              Rasmlar yuklanmoqda... {preloadProgress}%
+            </span>
+          )}
           <span className="question-counter">
             - {currentQuestionIndex + 1} -
           </span>
           <span className="timer">{formatTime(timeRemaining)}</span>
         </div>
       </header>
+
+      {/* CSS animation uchun style tag */}
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
 
       {/* Question */}
       <div className="question-container">

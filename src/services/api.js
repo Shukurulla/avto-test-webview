@@ -47,7 +47,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         // Faqat refresh token ham yaroqsiz bo'lsa localStorage ni tozalaymiz
-        console.error('❌ Refresh token ham yaroqsiz!');
+        console.error("❌ Refresh token ham yaroqsiz!");
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");

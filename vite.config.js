@@ -16,4 +16,14 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Service Worker'ni alohida chunk sifatida build qilish
+        manualChunks: undefined
+      }
+    }
+  },
+  // Service Worker'ni copy qilish
+  publicDir: 'public'
 });
