@@ -32,6 +32,20 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  position: relative;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.background-logo {
+  width: 150px;
+  height: 150px;
+  margin: auto;
+  border-radius: 20px;
 }
 
 .selection-box {
@@ -41,6 +55,8 @@
   width: 100%;
   max-width: 500px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 5;
 }
 
 .main-title {

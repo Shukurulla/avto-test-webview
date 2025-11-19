@@ -97,9 +97,6 @@ const TestSelection = () => {
       <header className="top-nav">
         <div className="nav-left">
           <div className="logo">
-            <div className="logo-icon">
-              <img src={Logo} className="logo-img" alt="" />
-            </div>
             <span>Avto Test Nukus</span>
           </div>
         </div>
@@ -107,6 +104,9 @@ const TestSelection = () => {
 
       <div className="test-selection-content">
         <div className="selection-box">
+          <div className="center">
+            <img src={Logo} alt="Background Logo" className="background-logo" />
+          </div>
           <h1 className="main-title">Avto Test Nukus</h1>
 
           {error && <div className="error-message">{error}</div>}
