@@ -32,8 +32,19 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      // Refresh token yo'q bo'lsa, darhol login ga yo'naltirish
+      if (!refreshToken) {
+        console.error("❌ Refresh token mavjud emas!");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
         const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
           refreshToken,
         });
@@ -46,12 +57,11 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${token}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // Faqat refresh token ham yaroqsiz bo'lsa localStorage ni tozalaymiz
-        console.error("❌ Refresh token ham yaroqsiz!");
+        console.error("❌ Refresh token yaroqsiz!");
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-        // window.location.href ni ishlatmaslik - PrivateRoute handle qiladi
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }

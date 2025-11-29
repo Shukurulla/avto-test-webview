@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { testService } from "../../services/testService";
+import Header from "../../components/Header";
 import "../../styles/TestSelection.css";
 import { Logo } from "../../../public";
 
 const TestSelection = () => {
-  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const [testTypes, setTestTypes] = useState([]);
@@ -18,7 +17,6 @@ const TestSelection = () => {
   const [selectedType, setSelectedType] = useState(50);
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState(1);
-  const [computerNumber, setComputerNumber] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -39,11 +37,6 @@ const TestSelection = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
   };
 
   const handleStartTest = async () => {
@@ -94,13 +87,7 @@ const TestSelection = () => {
 
   return (
     <div className="test-selection-page">
-      <header className="top-nav">
-        <div className="nav-left">
-          <div className="logo">
-            <span>Avto Test Nukus</span>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="test-selection-content">
         <div className="selection-box">

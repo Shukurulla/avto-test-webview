@@ -3,20 +3,46 @@
   background: #1e2530;
 }
 
-.history-header {
-  background: #2a3240;
-  border-bottom: 2px solid #333;
-  padding: 15px 30px;
-  color: white;
+.history-content {
+  padding: 20px 30px 0;
+}
+
+.history-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.history-header h1 {
+.title-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-back {
+  background: #4a5568;
+  color: white;
+  border: 2px solid #555;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background: #556070;
+  border-color: #f9a825;
+}
+
+.history-title h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
+  color: white;
 }
 
 .history-container {

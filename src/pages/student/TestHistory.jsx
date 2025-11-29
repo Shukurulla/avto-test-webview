@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { testService } from '../../services/testService';
-import { useAuth } from '../../context/AuthContext';
+import Header from '../../components/Header';
 import '../../styles/TestHistory.css';
 import { Logo } from '../../../public';
 
 const TestHistory = () => {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
 
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,11 +31,6 @@ const TestHistory = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
-
   if (loading) {
     return (
       <div className="loading">
@@ -48,16 +42,21 @@ const TestHistory = () => {
 
   return (
     <div className="test-history">
-      <header className="history-header">
-        <h1>Test Tarixi</h1>
-        <div className="user-info">
-          <span>Xush kelibsiz, {user?.login}</span>
+      <Header />
+
+      <div className="history-content">
+        <div className="history-title">
+          <div className="title-left">
+            <button onClick={() => navigate('/test/select')} className="btn-back">
+              ← Orqaga
+            </button>
+            <h2>Test Tarixi</h2>
+          </div>
           <button onClick={() => navigate('/test/select')} className="btn-primary">
             Yangi Test
           </button>
-          <button onClick={handleLogout} className="btn-danger">Chiqish</button>
         </div>
-      </header>
+      </div>
 
       <div className="history-container">
         {error && <div className="error-message">{error}</div>}
