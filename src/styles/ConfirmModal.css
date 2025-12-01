@@ -134,3 +134,36 @@
 .btn-confirm.info:hover {
   background: #3d6fdd;
 }
+
+.password-input-group {
+  margin-bottom: 20px;
+}
+
+.password-input {
+  width: 100%;
+  padding: 12px 15px;
+  background: #4a5568;
+  border: 2px solid #555;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #f9a825;
+  background: #556070;
+}
+
+.password-input::placeholder {
+  color: #888;
+}
+
+.password-error {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin: 8px 0 0;
+  text-align: left;
+}

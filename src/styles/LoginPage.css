@@ -3,35 +3,105 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1e2530;
 }
 
 .login-box {
-  background: white;
+  background: #3a4554;
   padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 400px;
+  border: 2px solid #555;
 }
 
 .login-box h1 {
   text-align: center;
-  color: #333;
+  color: white;
   margin-bottom: 10px;
   font-size: 24px;
 }
 
 .login-box h2 {
   text-align: center;
-  color: #666;
+  color: #999;
   margin-bottom: 30px;
   font-size: 18px;
 }
 
+.login-box .form-group {
+  margin-bottom: 20px;
+}
+
+.login-box .form-group label {
+  display: block;
+  color: #ccc;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.login-box .form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  background: #4a5568;
+  border: 2px solid #555;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.login-box .form-group input:focus {
+  outline: none;
+  border-color: #f9a825;
+  background: #556070;
+}
+
+.login-box .form-group input::placeholder {
+  color: #777;
+}
+
+.login-box .form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-box .error-message {
+  background: rgba(231, 76, 60, 0.15);
+  color: #ff6b6b;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
 .btn-block {
   width: 100%;
-  padding: 12px;
-  font-size: 18px;
+  padding: 14px;
+  font-size: 16px;
   margin-top: 10px;
+  background: #1faa5c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-block:hover:not(:disabled) {
+  background: #18944e;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(31, 170, 92, 0.4);
+}
+
+.btn-block:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }

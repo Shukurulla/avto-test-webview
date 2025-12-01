@@ -29,6 +29,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Login endpoint uchun interceptorni o'tkazib yuborish
+    if (originalRequest.url?.includes('/auth/login')) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -40,7 +45,10 @@ api.interceptors.response.use(
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-        window.location.href = "/login";
+        // Agar hozirda login sahifasida bo'lsak, redirect qilmaymiz
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = "/login";
+        }
         return Promise.reject(error);
       }
 
@@ -61,7 +69,10 @@ api.interceptors.response.use(
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-        window.location.href = "/login";
+        // Agar hozirda login sahifasida bo'lsak, redirect qilmaymiz
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       }
     }

@@ -101,12 +101,13 @@ const Header = () => {
       <ConfirmModal
         isOpen={showLogoutModal}
         title="Chiqishni tasdiqlang"
-        message="Haqiqatan ham tizimdan chiqmoqchimisiz?"
-        confirmText="Ha, chiqish"
+        message="Chiqish uchun parolni kiriting"
+        confirmText="Chiqish"
         cancelText="Bekor qilish"
         onConfirm={handleLogoutConfirm}
         onCancel={() => setShowLogoutModal(false)}
         type="danger"
+        requirePassword={true}
       />
     </>
   );
